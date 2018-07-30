@@ -1,0 +1,37 @@
+{
+  "name": "Cookie",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Cookie searches every opened page for traits that a cookie use notice is being displayed. If found, this extension makes an attempt to hide that notice from view.",
+  "homepage_url": "http://codytaylor.cc",
+  "icons": {
+    "16": "icons/cookie16.png",
+    "48": "icons/cookie48.png",
+    "128": "icons/cookie128.png"
+  },
+  "default_locale": "en",
+  "browser_action": {
+    "default_icon": "icons/grayCookie19.png",
+    "default_title": "page action demo",
+    "default_popup": "src/page_action/page_action.html"
+  },
+  "permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "scripts": ["src/background/background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "js": [
+        "src/inject/inject.js"
+      ]
+    }
+  ]
+}
