@@ -14,5 +14,6 @@ Adjust :cookie:'s keyword lists and thresholds to improves its performance.
 ## // TODO
 
 - [ ] Port to Firefox
-- [ ] Collect cookie notice sample text
+- [X] Collect cookie notice sample text
+- [ ] Collect more cookie notice sample text
 - [ ] Perform statistical analysis of samples to determine optimal keyword list and threshold values
