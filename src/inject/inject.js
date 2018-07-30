@@ -81,16 +81,3 @@ chrome.extension.sendMessage({}, function(response) {
 	}
 	}, 10);
 });
-
-/* The following are sample cookie notices to use when determining keywords */
-/*
-
-We use cookies and similar technologies to run this website and help us understand how you use it.
-
-This site uses cookies and other tracking technologies to assist with navigation and your ability to provide feedback, analyse your use of our products and services, assist with our promotional and marketing efforts, and provide content from third parties.Cookie Policy
-
-We use cookies to collect and analyse information on site performance and usage, and to enhance and customise content and advertisements. By Clicking "OK" or by clicking into any content on this site, you agree to allow cookies to be placed. To find out more or to change your cookie settings, visit the cookies section of our privacy policy.
-
-By using our website and services, you expressly agree to the placement of our performance, functionality and advertising cookies.
-
-*/
