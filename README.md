@@ -1,5 +1,5 @@
 # Cookie
-:cookie: hides cookie notices from webpages.
+:cookie: is a Chrome extension that hides cookie notices from web pages.
 
 ## Method
 
