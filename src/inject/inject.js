@@ -32,7 +32,7 @@ chrome.extension.sendMessage({}, function(response) {
 			// Attempts to identify cookie notices only by thier className and id,
 			// should catch most notices
 			for(var k=0; k<keyword.length; k++){
-				if(count == 0){
+				//if(count == 1){
 					for(var i=0; i<item.length; i++){
 						if(item[i].className.toLowerCase().includes(keyword[k])){
 							//console.log(keyword[k],item[i],item[i].className);
@@ -41,13 +41,13 @@ chrome.extension.sendMessage({}, function(response) {
 							console.log('here1');
 						}
 						if(item[i].id.toLowerCase().includes(keyword[k])){
-							//console.log(keyword[k],item[i],item[i].className);
+							console.log(keyword[k],item[i],item[i].className);
 							hide(item[i]);
 							count++;
 							console.log('here2');
 						}
 					}
-				}
+				//}
 			}
 			// Attempts to catch the longer notices that are not clearly identified
 			// by their className or id
@@ -59,7 +59,7 @@ chrome.extension.sendMessage({}, function(response) {
 						for(var p=0; p<para.length; p++){
 							if(found/words < .075){
 								if(item[i].innerHTML.toLowerCase().includes(para[p])){
-									console.log(found/words, para[p], item[i]);
+									//console.log(found/words, para[p], item[i]);
 									found++;
 								}
 							}
