@@ -9,6 +9,7 @@ chrome.extension.sendMessage({}, function(response) {
 		elements = 'div, span';
 		keyword = ['cookie','gdpr', 'accept', 'optanon'];
 		para = ['cookie', 'use', 'site', 'polic', 'technolog', 'service', 'understand', 'provide', 'assist', 'deliver', 'relevant', 'acknowledge'];
+		phrase = ['site uses cookies'];
 
 		function get(callback){
 			var item = document.querySelectorAll(elements);
@@ -52,6 +53,11 @@ chrome.extension.sendMessage({}, function(response) {
 			// Attempts to catch the longer notices that are not clearly identified
 			// by their className or id
 			for(var i=0; i<item.length; i++){
+				for(var k=0; k<phrase.length; k++){
+					if(item[i].innerHTML.toLowerCase().includes(phrase[k])){
+						hide(item[i]);
+					}
+				}
 				var words = item[i].innerHTML.toLowerCase().split(' ').length;
 				if(words > 50){
 					//console.log(words);
@@ -59,7 +65,7 @@ chrome.extension.sendMessage({}, function(response) {
 						for(var p=0; p<para.length; p++){
 							if(found/words < .075){
 								if(item[i].innerHTML.toLowerCase().includes(para[p])){
-									//console.log(found/words, para[p], item[i]);
+									console.log(found/words, para[p], item[i]);
 									found++;
 								}
 							}
