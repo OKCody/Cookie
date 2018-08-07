@@ -10,11 +10,11 @@ chrome.extension.sendMessage({}, function(response) {
 
 		elements = 'div, span';
 		keyword = ['cookie','gdpr', 'accept', 'optanon'];
-		// .195 w/stopWords 
+		// .195 w/stopWords
 		// para = ['policy', 'cookie', 'website', 'information', 'more', 'content', 'agree', 'experience', 'about', 'experience', 'analyse', 'analyze', 'provide', 'click', 'technolog'];
 
 		// .182 w/o stopWords, .25 w/ stopWords
-		para = ['cookie', 'personal', 'optimise', 'optimize', 'customise', 'customize', 'site', 'policy', 'website', 'information', 'agree', 'experience', 'analy', 'analy', 'services', 'provide', 'privacy', 'technolog', 'accept', 'consent'];
+		para = ['cookie', 'personal', 'optimise', 'optimize', 'customise', 'customize', 'site', 'policy', 'website', 'information', 'agree', 'experience', 'analy', 'analy', 'services', 'provide', 'technolog', 'accept', 'consent'];
 
 		// do not used 'content' as it is too commonly used - using it broke Office 365 Calendar
 
@@ -32,20 +32,20 @@ chrome.extension.sendMessage({}, function(response) {
 		  callback(item);
 		}
 
-		function hide(notice){
+		function hide(notice, trigger){
 			notice.style.display = 'none';
 			//chrome.browserAction.setIcon({path:"/icons/cookie19.png"});
 			// changing the icon will probably need to happen from background page.
 			chrome.runtime.sendMessage({type: "icon", options: {
     		icon: 'color'
 			}});
+			console.log('🍪', trigger);
 		}
 
 		function test(item){
 			var count = 0;
 			var paraFound = 0;
-			var found = 0;
-			var wxyz = 0;
+			var found = [];
 			// Attempts to identify cookie notices only by thier className and id,
 			// should catch most notices
 			for(var k=0; k<keyword.length; k++){
@@ -53,14 +53,11 @@ chrome.extension.sendMessage({}, function(response) {
 					for(var i=0; i<item.length; i++){
 						if(item[i].className.toLowerCase().includes(keyword[k])){
 							//console.log(keyword[k],item[i],item[i].className);
-							hide(item[i]);
-							console.log('here1');
+							hide(item[i], 'class: ' + item[i].className);
 						}
 						if(item[i].id.toLowerCase().includes(keyword[k])){
-							console.log(keyword[k],item[i],item[i].className);
-							hide(item[i]);
+							hide(item[i], 'id: ' + item[i].id);
 							count++;
-							console.log('here2');
 						}
 					}
 				//}
@@ -70,35 +67,36 @@ chrome.extension.sendMessage({}, function(response) {
 			for(var i=0; i<item.length; i++){
 				var filtered = item[i].innerHTML.toLowerCase().replace(stopWords, ' ');
 				var length = filtered.split(' ').length;
+				var foundCount = 0;
+				var foundTotal = 0;
 
 				for(var k=0; k<phrase.length; k++){
 					if(item[i].innerHTML.toLowerCase().includes(phrase[k])){
-						hide(item[i]);
+						hide(item[i], 'phrase: ' + phrase[k]);
 					}
 				}
+
 				//overlapping normal distribution points to using a threshold of .1
 				if(length > 7){
 					for(var p=0; p<para.length; p++){
-						if(found/length < .25){
+						if(foundTotal/length < .25){
 							//innerHTML works pretty well trying innerText
-							paraFound = filtered.split(para[p]).length - 1;
-							if(paraFound){
-								found = found + paraFound;
-								//console.log(found, length, para[p], filtered);
+							var foundCount = filtered.split(para[p]).length - 1;
+							if(foundCount){
+								found.push(para[p]);
+								var foundTotal = foundTotal + foundCount;
 							}
 						}
 						else{
-							//console.log('boom');
-							hide(item[i]);
-							//console.log(found/length, para[p-1], item[i]);
-							console.log(found/length, 'hide - - - - - - - - - - ');
-							wxyz++;
+							hide(item[i], (foundTotal/length).toFixed(3).toString() + ' keywords: ' + found.join(' ') );
+							//console.log(item[i]);
 							break;
 						}
 					}
-					//console.log(found, length);
-					found = 0;
 				}
+				var found = [];
+				var foundCount = 0;
+				var foundTotal = 0;
 			}
 		}
 
