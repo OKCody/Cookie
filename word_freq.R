@@ -54,7 +54,7 @@ library(stringr)
 library(rvest)
 library(dplyr)
 
-text <- read_file('test.html')
+text <- read_file('Control.html')
 text <- html_text(read_html(text))
 text <- text %>%
   gsub("\\n"," ",.) %>%
@@ -71,9 +71,7 @@ colnames(words.freq) <- c('word', 'freq')
 words.freq <- data.frame(tolower(words.freq$word), as.numeric(words.freq$freq))
 colnames(words.freq) <- c('word', 'freq')
 words.freq <- data.frame(tolower(words.freq$word), as.numeric(words.freq$freq))
-colnames(words.freq) <- c('word', 'freq');
-words.freq <- data.frame(noquote(unquote(words.freq$word)), words.freq$freq)
-colnames(words.freq) <- c('word', 'freq');
+colnames(words.freq) <- c('word', 'freq')
 
 words.freq <- words.freq %>%
   group_by(word) %>%
@@ -111,4 +109,5 @@ colnames(words.freq) <- c('word', 'freq')
 
 sample <- words.freq %>%
   arrange(., desc(freq))
-  
+
+diff <- setdiff(notices$word, tail(sample$word,10600))
