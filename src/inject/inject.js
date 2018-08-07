@@ -6,10 +6,25 @@ chrome.extension.sendMessage({}, function(response) {
 		// ----------------------------------------------------------
 		// This part of the script triggers when page is done loading
 
+		console.log('hoop');
+
 		elements = 'div, span';
 		keyword = ['cookie','gdpr', 'accept', 'optanon'];
-		para = ['cookie', 'use', 'site', 'polic', 'technolog', 'service', 'understand', 'provide', 'assist', 'deliver', 'relevant', 'acknowledge'];
+		// .195 w/stopWords 
+		// para = ['policy', 'cookie', 'website', 'information', 'more', 'content', 'agree', 'experience', 'about', 'experience', 'analyse', 'analyze', 'provide', 'click', 'technolog'];
+
+		// .182 w/o stopWords, .25 w/ stopWords
+		para = ['cookie', 'personal', 'optimise', 'optimize', 'customise', 'customize', 'site', 'policy', 'website', 'information', 'agree', 'experience', 'analy', 'analy', 'services', 'provide', 'privacy', 'technolog', 'accept', 'consent'];
+
+		// do not used 'content' as it is too commonly used - using it broke Office 365 Calendar
+
+		// sensitive to the term "information technology". It removes the address from OU IT's webpage.
+
+		//['cookie', 'use', 'site', 'polic', 'technolog', 'service', 'understand', 'provide', 'assist', 'deliver', 'relevant', 'acknowledge'];
+
 		phrase = ['site uses cookies'];
+
+		stopWords = /\sto\s|this\s|\sthis\s|\sby\s|\sfor\s|\son\s|\swe\s|\sif\s|\sare\s|\sthat\s|\sand\s|\sus\s|\sin\s|\sor\s|\sout\s|\suse\s|use\s|\syou\s|\syour\s|\sour\s|\sits\s|\sthe\s|\sa\s|\scan\s|\sit\s|\swe\s|we\s|\sof\s|\suses\s|\swith\s/gi;
 
 		function get(callback){
 			var item = document.querySelectorAll(elements);
@@ -28,8 +43,9 @@ chrome.extension.sendMessage({}, function(response) {
 
 		function test(item){
 			var count = 0;
+			var paraFound = 0;
 			var found = 0;
-			var words = 0;
+			var wxyz = 0;
 			// Attempts to identify cookie notices only by thier className and id,
 			// should catch most notices
 			for(var k=0; k<keyword.length; k++){
@@ -38,7 +54,6 @@ chrome.extension.sendMessage({}, function(response) {
 						if(item[i].className.toLowerCase().includes(keyword[k])){
 							//console.log(keyword[k],item[i],item[i].className);
 							hide(item[i]);
-							count++;
 							console.log('here1');
 						}
 						if(item[i].id.toLowerCase().includes(keyword[k])){
@@ -53,30 +68,36 @@ chrome.extension.sendMessage({}, function(response) {
 			// Attempts to catch the longer notices that are not clearly identified
 			// by their className or id
 			for(var i=0; i<item.length; i++){
+				var filtered = item[i].innerHTML.toLowerCase().replace(stopWords, ' ');
+				var length = filtered.split(' ').length;
+
 				for(var k=0; k<phrase.length; k++){
 					if(item[i].innerHTML.toLowerCase().includes(phrase[k])){
 						hide(item[i]);
 					}
 				}
-				var words = item[i].innerHTML.toLowerCase().split(' ').length;
-				if(words > 50){
-					//console.log(words);
-					if(count == 0){
-						for(var p=0; p<para.length; p++){
-							if(found/words < .075){
-								if(item[i].innerHTML.toLowerCase().includes(para[p])){
-									console.log(found/words, para[p], item[i]);
-									found++;
-								}
-							}
-							else{
-								//console.log('boom');
-								hide(item[i]);
-								console.log('here3');
+				//overlapping normal distribution points to using a threshold of .1
+				if(length > 7){
+					for(var p=0; p<para.length; p++){
+						if(found/length < .25){
+							//innerHTML works pretty well trying innerText
+							paraFound = filtered.split(para[p]).length - 1;
+							if(paraFound){
+								found = found + paraFound;
+								//console.log(found, length, para[p], filtered);
 							}
 						}
-					  found = 0;
+						else{
+							//console.log('boom');
+							hide(item[i]);
+							//console.log(found/length, para[p-1], item[i]);
+							console.log(found/length, 'hide - - - - - - - - - - ');
+							wxyz++;
+							break;
+						}
 					}
+					//console.log(found, length);
+					found = 0;
 				}
 			}
 		}
