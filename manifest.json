@@ -18,7 +18,8 @@
   "permissions": [
     "https://*/*",
     "http://*/*",
-    "http://localhost/*"
+    "http://localhost/*",
+    "storage"
   ],
   "background": {
     "scripts": ["src/background/background.js"],
