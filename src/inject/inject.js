@@ -13,7 +13,7 @@ chrome.extension.sendMessage({}, function(response) {
 		// .195 w/stopWords
 		// para = ['policy', 'cookie', 'website', 'information', 'more', 'content', 'agree', 'experience', 'about', 'experience', 'analyse', 'analyze', 'provide', 'click', 'technolog'];
 
-		// .182 w/o stopWords, .25 w/ stopWords
+		// .182 w/o stopWords, .3 w/ stopWords and phrase checking
 		para = ['cookie', 'personal', 'optimise', 'optimize', 'customise', 'customize', 'site', 'policy', 'website', 'information', 'agree', 'experience', 'analy', 'analy', 'services', 'provide', 'technolog', 'accept', 'consent'];
 
 		// do not used 'content' as it is too commonly used - using it broke Office 365 Calendar
@@ -22,7 +22,7 @@ chrome.extension.sendMessage({}, function(response) {
 
 		//['cookie', 'use', 'site', 'polic', 'technolog', 'service', 'understand', 'provide', 'assist', 'deliver', 'relevant', 'acknowledge'];
 
-		phrase = ['site uses cookies'];
+		phrase = ['site uses cookies', 'we use cookies'];
 
 		stopWords = /\sto\s|this\s|\sthis\s|\sby\s|\sfor\s|\son\s|\swe\s|\sif\s|\sare\s|\sthat\s|\sand\s|\sus\s|\sin\s|\sor\s|\sout\s|\suse\s|use\s|\syou\s|\syour\s|\sour\s|\sits\s|\sthe\s|\sa\s|\scan\s|\sit\s|\swe\s|we\s|\sof\s|\suses\s|\swith\s/gi;
 
@@ -40,6 +40,14 @@ chrome.extension.sendMessage({}, function(response) {
     		icon: 'color'
 			}});
 			console.log('🍪', trigger);
+			// This message is used to log URLs on which Cookie has operated.
+			// This feature is meant so that a person can manually check how
+			// well Cookie operates on the pages that it does. Remove the
+			// following message for production.
+			chrome.runtime.sendMessage({type: "storage", options:{
+				url: document.location.href
+			}});
+			// End debugging block
 		}
 
 		function test(item){
@@ -79,7 +87,7 @@ chrome.extension.sendMessage({}, function(response) {
 				//overlapping normal distribution points to using a threshold of .1
 				if(length > 7){
 					for(var p=0; p<para.length; p++){
-						if(foundTotal/length < .25){
+						if(foundTotal/length < .3){
 							//innerHTML works pretty well trying innerText
 							var foundCount = filtered.split(para[p]).length - 1;
 							if(foundCount){
