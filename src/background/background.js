@@ -1,3 +1,14 @@
+chrome.browserAction.onClicked.addListener(function(tab) {
+   chrome.tabs.executeScript(null, {file: "/src/background/action.js"});
+});
+
+// the beginnings of a function to show a hidden element because it shouldn't
+// have been hidden in the first place.
+// chrome.browserAction.onClicked.addListener(function(tab) {
+//    chrome.tabs.executeScript(null, {file: "testScript.js"});
+// });
+
+
 chrome.runtime.onMessage.addListener(function(request, sender) {
   if (request.type == 'icon'){
     if (request.options.icon == 'color'){

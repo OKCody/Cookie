@@ -6,8 +6,6 @@ chrome.extension.sendMessage({}, function(response) {
 		// ----------------------------------------------------------
 		// This part of the script triggers when page is done loading
 
-		console.log('hoop');
-
 		elements = 'div, span';
 		keyword = ['cookie','gdpr', 'accept', 'optanon'];
 		// .195 w/stopWords
@@ -22,7 +20,7 @@ chrome.extension.sendMessage({}, function(response) {
 
 		//['cookie', 'use', 'site', 'polic', 'technolog', 'service', 'understand', 'provide', 'assist', 'deliver', 'relevant', 'acknowledge'];
 
-		phrase = ['site uses cookies', 'we use cookies'];
+		phrase = ['site uses cookies', 'we use cookies', 'placed cookies on your device'];
 
 		stopWords = /\sto\s|this\s|\sthis\s|\sby\s|\sfor\s|\son\s|\swe\s|\sif\s|\sare\s|\sthat\s|\sand\s|\sus\s|\sin\s|\sor\s|\sout\s|\suse\s|use\s|\syou\s|\syour\s|\sour\s|\sits\s|\sthe\s|\sa\s|\scan\s|\sit\s|\swe\s|we\s|\sof\s|\suses\s|\swith\s/gi;
 
@@ -32,7 +30,10 @@ chrome.extension.sendMessage({}, function(response) {
 		  callback(item);
 		}
 
+		hidden = [];
+
 		function hide(notice, trigger){
+			hidden.push(notice)
 			notice.style.display = 'none';
 			//chrome.browserAction.setIcon({path:"/icons/cookie19.png"});
 			// changing the icon will probably need to happen from background page.
@@ -73,13 +74,13 @@ chrome.extension.sendMessage({}, function(response) {
 			// Attempts to catch the longer notices that are not clearly identified
 			// by their className or id
 			for(var i=0; i<item.length; i++){
-				var filtered = item[i].innerHTML.toLowerCase().replace(stopWords, ' ');
+				var filtered = item[i].textContent.toLowerCase().replace(stopWords, ' ');
 				var length = filtered.split(' ').length;
 				var foundCount = 0;
 				var foundTotal = 0;
 
 				for(var k=0; k<phrase.length; k++){
-					if(item[i].innerHTML.toLowerCase().includes(phrase[k])){
+					if(item[i].textContent.toLowerCase().includes(phrase[k])){
 						hide(item[i], 'phrase: ' + phrase[k]);
 					}
 				}
