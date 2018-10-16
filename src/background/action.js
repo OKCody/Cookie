@@ -5,7 +5,7 @@ for(var i = 0; i < hidden.length; i++){
   if(hidden[i].style.display == 'none'){
     hidden[i].style.display = 'block';
     chrome.runtime.sendMessage({type: "icon", options: {
-      icon: 'gray'
+      icon: 'bite'
     }});
   }
   else{

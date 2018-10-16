@@ -25,6 +25,13 @@ chrome.runtime.onMessage.addListener(function(request, sender) {
         tabId: sender.tab.id
       });
     }
+    if (request.options.icon == 'bite'){
+      console.log('bite');
+      chrome.browserAction.setIcon({
+        path : "/icons/bite19.png",
+        tabId: sender.tab.id
+      });
+    }
   }
   // This conditional statement is only for debugging purposes. It
   // is meant to log all URLs on which Cookie removes a cookie notice
