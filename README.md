@@ -22,11 +22,11 @@ The more conservative bookmarklet, which aims only to remove cookie notices . . 
 ```
 javascript:(function () {
   var nodes = document.querySelectorAll('body *');
-  for (i = 0; i < elements.length; i++) {
-    if (getComputedStyle(elements[i]).position == 'fixed') {
+  for (i = 0; i < nodes.length; i++) {
+    if (getComputedStyle(nodes[i]).position == 'fixed') {
       var re = new RegExp('cookie | use | website | policy | site | experience | policy', 'i');
       if (nodes[i].innerText.match(re)){
-        elements[i].style.display = 'none';
+        nodes[i].style.display = 'none';
       }
     }
   }
@@ -38,9 +38,9 @@ javascript:(function () {
 ```
 javascript:(function () {
   var nodes = document.querySelectorAll('body *');
-  for (i = 0; i < elements.length; i++) {
-    if (getComputedStyle(elements[i]).position == 'fixed') {
-      elements[i].style.display = 'none';
+  for (i = 0; i < nodes.length; i++) {
+    if (getComputedStyle(nodes[i]).position == 'fixed') {
+      nodes[i].style.display = 'none';
     }
   }
 })();
