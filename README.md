@@ -1,5 +1,7 @@
 # Cookie
-Cookie notices enrage me.  Therefore :cookie: is a Chrome extension that hides cookie notices from web pages.
+Cookie notices enrage me.:fire::rage::fire:  
+
+:cookie: is a Chrome extension that hides cookie notices from web pages.
 
 ## Browser Extension
 
@@ -11,9 +13,11 @@ Cookie is simple. It searches the DOM for nodes with position == 'fixed' && inne
 
 ## Bookmarklet
 
-Because cookie notices are even more annoying on mobile devices, yet mobile browsers don't support plugins, use this bookmarklet for similar, slightly less convenient, functionality.
+Because cookie notices are even more annoying on mobile devices, yet mobile browsers don't support plugins, use these bookmarklets for similar, slightly less convenient, functionality.
 
-To use this bookmarklet, bookmark this page using a mobile device's web browser and replace the URL with the following. Next time you encounter a webpage with a cookie notice plastered all over the viewport 🔥🤬🔥, navigate to this bookmark and tap it.
+To use these bookmarklet, bookmark this page using a mobile device's web browser and replace the URL of that bookmark with one of the following javascript snippets. Next time you encounter a webpage with a cookie notice plastered all over the viewport :fire::rage::fire:, navigate to one of these bookmarks and tap it.
+
+The more conservative bookmarklet, which aims only to remove cookie notices . . .
 
 ```
 javascript:(function () {
