@@ -6,112 +6,40 @@ chrome.extension.sendMessage({}, function(response) {
 		// ----------------------------------------------------------
 		// This part of the script triggers when page is done loading
 
-		elements = 'div, span';
-		keyword = ['cookie','gdpr', 'accept', 'optanon'];
-		// .195 w/stopWords
-		// para = ['policy', 'cookie', 'website', 'information', 'more', 'content', 'agree', 'experience', 'about', 'experience', 'analyse', 'analyze', 'provide', 'click', 'technolog'];
-
-		// .182 w/o stopWords, .3 w/ stopWords and phrase checking
-		para = ['cookie', 'personal', 'optimise', 'optimize', 'customise', 'customize', 'site', 'policy', 'website', 'information', 'agree', 'experience', 'analy', 'analy', 'services', 'provide', 'technolog', 'accept', 'consent'];
-
-		// do not used 'content' as it is too commonly used - using it broke Office 365 Calendar
-
-		// sensitive to the term "information technology". It removes the address from OU IT's webpage.
-
-		//['cookie', 'use', 'site', 'polic', 'technolog', 'service', 'understand', 'provide', 'assist', 'deliver', 'relevant', 'acknowledge'];
-
-		phrase = ['site uses cookies', 'we use cookies', 'placed cookies on your device'];
-
-		stopWords = /\sto\s|this\s|\sthis\s|\sby\s|\sfor\s|\son\s|\swe\s|\sif\s|\sare\s|\sthat\s|\sand\s|\sus\s|\sin\s|\sor\s|\sout\s|\suse\s|use\s|\syou\s|\syour\s|\sour\s|\sits\s|\sthe\s|\sa\s|\scan\s|\sit\s|\swe\s|we\s|\sof\s|\suses\s|\swith\s/gi;
-
 		function get(callback){
-			var item = document.querySelectorAll(elements);
+			var nodes = document.querySelectorAll('body *');
 			//console.log(item);
-		  callback(item);
+		  callback(nodes);
 		}
 
 		hidden = [];
 
-		function hide(notice, trigger){
-			hidden.push(notice)
-			notice.style.display = 'none';
-			//chrome.browserAction.setIcon({path:"/icons/cookie19.png"});
-			// changing the icon will probably need to happen from background page.
+		function hide(node){
+			var re = new RegExp('cookie | use | website | policy | site | experience | policy', 'i');
+			// Hide anything that has a fixed position and remotely smells like a cookie notice
+			if(node.innerText.match(re)) {
+				node.style.display = 'none';
+				hidden.push(node);
+			}
+
+			// changing the icon will has to happen from background page.
 			chrome.runtime.sendMessage({type: "icon", options: {
     		icon: 'color'
 			}});
-			console.log('🍪', trigger);
-			// This message is used to log URLs on which Cookie has operated.
-			// This feature is meant so that a person can manually check how
-			// well Cookie operates on the pages that it does. Remove the
-			// following message for production.
-			chrome.runtime.sendMessage({type: "storage", options:{
-				url: document.location.href
-			}});
-			// End debugging block
+			console.log('🍪');
 		}
 
-		function test(item){
-			var count = 0;
-			var paraFound = 0;
-			var found = [];
-			// Attempts to identify cookie notices only by thier className and id,
-			// should catch most notices
-			for(var k=0; k<keyword.length; k++){
-				//if(count == 1){
-					for(var i=0; i<item.length; i++){
-						if(item[i].className.toLowerCase().includes(keyword[k])){
-							//console.log(keyword[k],item[i],item[i].className);
-							hide(item[i], 'class: ' + item[i].className);
-						}
-						if(item[i].id.toLowerCase().includes(keyword[k])){
-							hide(item[i], 'id: ' + item[i].id);
-							count++;
-						}
-					}
-				//}
-			}
-			// Attempts to catch the longer notices that are not clearly identified
-			// by their className or id
-			for(var i=0; i<item.length; i++){
-				var filtered = item[i].textContent.toLowerCase().replace(stopWords, ' ');
-				var length = filtered.split(' ').length;
-				var foundCount = 0;
-				var foundTotal = 0;
-
-				for(var k=0; k<phrase.length; k++){
-					if(item[i].textContent.toLowerCase().includes(phrase[k])){
-						hide(item[i], 'phrase: ' + phrase[k]);
-					}
+		function test(nodes){
+			for (var i = 0; i < nodes.length; i++){
+				if(getComputedStyle(nodes[i]).position == 'fixed') {
+					hide(nodes[i]);
+					console.log(nodes[i]);
 				}
-
-				//overlapping normal distribution points to using a threshold of .1
-				if(length > 7){
-					for(var p=0; p<para.length; p++){
-						if(foundTotal/length < .3){
-							//innerHTML works pretty well trying innerText
-							var foundCount = filtered.split(para[p]).length - 1;
-							if(foundCount){
-								found.push(para[p]);
-								var foundTotal = foundTotal + foundCount;
-							}
-						}
-						else{
-							hide(item[i], (foundTotal/length).toFixed(3).toString() + ' keywords: ' + found.join(' ') );
-							//console.log(item[i]);
-							break;
-						}
-					}
-				}
-				var found = [];
-				var foundCount = 0;
-				var foundTotal = 0;
 			}
 		}
 
 		get(test);
-		// ----------------------------------------------------------
-
 	}
+		// ----------------------------------------------------------
 	}, 10);
 });
